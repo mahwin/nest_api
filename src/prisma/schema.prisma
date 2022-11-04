@@ -1,0 +1,73 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
+  binaryTargets = ["native","darwin","debian-openssl-1.1.x"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+  referentialIntegrity = "prisma"
+}
+
+model User {
+  id              Int         @id @default(autoincrement())
+  phone           String     @unique
+  name            String     @unique
+  avatar          String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  tokens          Token[]
+  UserAddVocabulary     UserAddVocabulary?
+}
+
+model Token {
+  id        Int      @id @default(autoincrement())
+  payload   String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+}
+
+model Vocabulary {
+  id        Int      @id @default(autoincrement())
+  category  String
+  level     String
+  word      String
+  mean      String
+  frequency String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UserAddVocabulary {
+  id                  Int      @id @default(autoincrement())
+  user                User     @relation(fields: [userId], references: [id])
+  userId              Int      @unique
+  react               String?
+  next                String?
+  axios               String?
+  styledComponents    String?
+  recoil              String?
+  reactRedux          String?
+  reactHookForm       String?
+  reactRouter         String?
+  tailwindcss         String?
+  reactQuery          String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+model SeperatedVocabulary{
+  id                  Int      @id @default(autoincrement())
+  data                String   @db.LongText
+}
+
+
+
+
